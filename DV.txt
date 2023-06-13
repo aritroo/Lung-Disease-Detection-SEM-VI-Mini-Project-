@@ -1,0 +1,227 @@
+EXP!
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+housing = pd.read_csv('housing.csv')
+housing.head()
+
+housing["ocean_proximity"].value_counts().plot(kind='bar')
+
+housing.hist(bins=50, figsize=(20, 15), color='purple')
+
+housing.plot(kind="scatter", x="longitude", y="latitude", alpha=0.1)
+
+sns.pairplot(data=housing[["median_house_value", "median_income", "total_rooms", "ocean_proximity"]])
+
+sns.boxplot(data=housing, x='median_house_value', y='ocean_proximity')
+
+plt.show()
+
+
+
+
+EXP2
+!pip install gmaps
+import gmaps
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+district_wise_rainfall = pd.read_csv("district wise rainfall normal.csv")
+india_rainfall = pd.read_csv("rainfall in india 1901-2015.csv").fillna(0)
+
+plt.figure(figsize=(18, 28))
+plt.subplot(2, 1, 1)
+plt.xticks(rotation=90)
+sns.boxplot(x='STATE_UT_NAME', y='ANNUAL', data=district_wise_rainfall)
+plt.title('Annual rainfall in all States and UT')
+
+plt.subplot(2, 1, 2)
+plt.xticks(rotation=90)
+sns.barplot(x='STATE_UT_NAME', y='ANNUAL', data=district_wise_rainfall)
+
+total_rainfall_in_states = district_wise_rainfall.groupby(['STATE_UT_NAME']).sum()
+sns.heatmap(total_rainfall_in_states[['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP']])
+sns.heatmap(total_rainfall_in_states[['Jan-Feb', 'Mar-May', 'Jun-Sep', 'Oct-Dec']])
+
+yearly_rainfall = india_rainfall.groupby(['YEAR']).sum()
+yearly_rainfall['YEAR'] = yearly_rainfall.index
+
+plt.figure(figsize=(18, 28))
+plt.xticks(rotation=90)
+sns.barplot(x='YEAR', y='ANNUAL', data=yearly_rainfall, width=0.9)
+
+plt.show()
+
+
+
+
+
+EXP3
+import seaborn as sns
+import pandas as pd
+import matplotlib.pyplot as plt
+
+df = pd.read_csv("iris (1).csv")
+df1 = df.iloc[0:100]
+
+sns.barplot(data=df1, x='petal.length', y='petal.width')
+sns.barplot(data=df1, x='petal.length', y='petal.width', orient='horizontal')
+
+plt.figure(figsize=(10, 5))
+sns.barplot(data=df1, x='petal.length', y='petal.width', hue='variety', ci=None)
+
+plt.figure(figsize=(10, 5))
+sns.boxplot(data=df1, x='sepal.length', y='sepal.width')
+
+plt.figure(figsize=(10, 5))
+sns.countplot(data=df1, x='sepal.length')
+
+plt.show()
+
+
+
+
+
+EXP4
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+housing = pd.read_csv('housing.csv')
+housing.head()
+sns.distplot(housing["median_income"])
+housing["median_income"].skew()
+log_income = np.log(housing["median_income"])
+sns.distplot(log_income)
+log_income.skew()
+
+
+
+EXP 5
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+
+# Read the data from the CSV file
+df = pd.read_csv('sales_train.csv')
+df = df.loc[:108000]
+
+# Convert the 'date' column to datetime format
+df['date'] = pd.to_datetime(df['date'], format='%d.%m.%Y')
+
+# Group the data by date and calculate the sum of 'item_cnt_day'
+d_sale = df.groupby('date')['item_cnt_day'].sum()
+
+# Plot the sales over time
+fig, ax = plt.subplots()
+ax.plot(d_sale.index, d_sale.values)
+ax.xaxis.set_major_locator(mdates.MonthLocator(interval=1))
+ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %Y'))
+plt.xlabel('Date')
+plt.ylabel("Sales")
+plt.title("Daily sales over time")
+plt.show()
+
+# Plot the filled area under the sales curve
+fig, ax = plt.subplots()
+ax.fill_between(d_sale.index, d_sale.values)
+ax.xaxis.set_major_locator(mdates.MonthLocator(interval=1))
+ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %Y'))
+plt.xlabel('Date')
+plt.ylabel("Sales")
+plt.title("Daily sales over time")
+plt.show()
+
+
+
+EXP6
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_iris
+from sklearn.decomposition import PCA
+
+# Load the Iris dataset
+df = load_iris()
+X = df.data
+y = df.target
+
+# Create subplots for histograms and scatter plots
+fig, ax = plt.subplots(4, 4, figsize=(10, 10))
+for i in range(4):
+    for j in range(4):
+        if i == j:
+            ax[i, j].hist(X[:, i], bins=10)
+        else:
+            ax[i, j].scatter(X[:, i], X[:, j], c=y, alpha=0.5)
+        if i == 3:
+            ax[i, j].set_xlabel(df.feature_names[j])
+        if j == 0:
+            ax[i, j].set_ylabel(df.feature_names[i])
+
+plt.show()
+
+# Perform PCA
+pca = PCA(n_components=2)
+X_pca = pca.fit_transform(X)
+
+# Scatter plot of PCA results
+plt.scatter(X_pca[:, 0], X_pca[:, 1], c=y, alpha=0.5)
+plt.xlabel('PCA 1')
+plt.ylabel('PCA 2')
+plt.show()
+
+
+EXP 7
+pip install geopandas
+
+import geopandas as gpd
+
+gdf=gpd.read_file('tl_2010_us_state10.dbf')
+gdf.head()
+gdf=gdf.to_crs('EPSG:3857')
+gdf.plot(figsize=(30,30))
+
+EXP 9
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+df = pd.read_csv('StudentsPerformance.csv')
+df.head()
+
+plt.scatter(x='parental level of education', y='math score', data=df)
+plt.xticks(rotation=90)
+
+sns.stripplot(x='parental level of education', y='math score', data=df)
+plt.xticks(rotation=90)
+
+sns.stripplot(x='parental level of education', y='math score', data=df, alpha=0.5)
+plt.xticks(rotation=90)
+
+
+
+
+EXP10
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+df = pd.read_csv('StudentsPerformance.csv')
+df.head()
+
+plt.scatter(x='parental level of education', y='math score', data=df)
+plt.xticks(rotation=90)
+
+sns.stripplot(x='parental level of education', y='math score', data=df)
+plt.xticks(rotation=90)
+
+sns.stripplot(x='parental level of education', y='math score', data=df, palette='magma')
+plt.xticks(rotation=90)
+
+sns.stripplot(x='parental level of education', y='math score', data=df, palette='viridis')
+plt.xticks(rotation=90)
